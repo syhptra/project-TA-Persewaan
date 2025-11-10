@@ -10,23 +10,21 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-    Schema::create('products', function (Blueprint $table) {
+{
+    Schema::create('alat_disewa', function (Blueprint $table) {
         $table->id();
-        $table->string('image');
-        $table->string('title');
-        $table->text('description');
-        $table->bigInteger('price');
-        $table->integer('stock')->default(0);
+        $table->foreignId('barang_id')->constrained('barang')->onDelete('cascade');
+        $table->string('status')->default('Disewa');
         $table->timestamps();
     });
 }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('alat_disewa');
     }
 };

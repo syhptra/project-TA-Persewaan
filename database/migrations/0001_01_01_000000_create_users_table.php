@@ -17,7 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+             $table->string('alamat')->nullable(); 
+            $table->string('no_hp', 20)->nullable(); 
+            $table->string('role')->default('user'); // menambahkan kolom role dengan default 'user'
+         $table->rememberToken();
             $table->timestamps();
         });
 

@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('index'));
         }
 
         return back()->withErrors([
@@ -40,23 +40,29 @@ class AuthController extends Controller
     }
 
     // proses register
+    // proses register
     public function register(Request $request)
-    {
-        $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-        ]);
+{
+    $request->validate([
+        'name'      => 'required|string|max:255',
+        'email'     => 'required|string|email|max:255|unique:users',
+        'password'  => 'required|string|min:3|confirmed',
+        'alamat'    => 'nullable|string|max:255',
+        'no_hp'     => 'nullable|string|max:20',
+    ]);
 
-        $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']), // PENTING! harus di-hash
-        ]);
+    User::create([
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+        'alamat'   => $request->alamat,
+        'no_hp'    => $request->no_hp,
+        'role'     => 'user', // default user
+    ]);
 
-        Auth::login($user);
-        return redirect()->route('dashboard');
-    }
+    return redirect()->route('auth.login')
+                     ->with('success', 'Registrasi berhasil! Silakan login.');
+}
 
     // proses logout
     public function logout(Request $request)
@@ -64,6 +70,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return redirect('/');
     }
 }
